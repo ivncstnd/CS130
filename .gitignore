@@ -1,0 +1,7 @@
+SConstruct
+grading-script.py
+*.o
+.scon*
+ray_tracer
+test*
+*.png
