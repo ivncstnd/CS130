@@ -86,7 +86,7 @@ int main(int argc, char** argv)
             case 'i': input_file = optarg; break;
             case 'f': statistics_file = optarg; break;
             case 'o': output_file = optarg; break;
-            case 'x': test_x = atoi(optarg); break;
+            case 'x': test_x = atoi(optarg);  break;
             case 'y': test_y = atoi(optarg); break;
             case 'h': enable_acceleration=false; break;
             case 'z': acceleration_grid_size = atoi(optarg); break;
@@ -108,7 +108,8 @@ int main(int argc, char** argv)
     }
     assert(fin);
     parse.Parse_Input(render_world,fin);
-    
+
+    Pixel_Print("-x ", test_x);
     // Render the image
     render_world.Render();
 
@@ -120,6 +121,9 @@ int main(int argc, char** argv)
         // This way you can do: debug.Print("foo = ",foo);
         Debug_Scope::enable = true;
 
+        Debug_Scope debug;
+        Pixel_Print("debug pixel: -x ", test_x," -y ", test_y);
+        
         // Render just the pixel we are debugging
         render_world.Render_Pixel(ivec2(test_x,test_y));
 
