@@ -1,3 +1,5 @@
+// Student Name: Ivan Castaneda
+// Student ID: 861311076
 #include "light.h"
 #include "parse.h"
 #include "object.h"

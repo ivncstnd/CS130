@@ -74,7 +74,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
         Pixel_Print("call Shade_Surface with location ", intersection_point,"; normal: ", normal);
         color = p.first.shader->Shade_Surface(Render_World(), ray, closest_hit, intersection_point, normal, recursion_depth);
         Debug_Scope debug;
-        Pixel_Print("flat shader; color: ", color);
+        Pixel_Print("ambient: ");
     }
     else
     {
