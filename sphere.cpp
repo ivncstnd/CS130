@@ -30,7 +30,7 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 vec3 Sphere::Normal(const Ray& ray, const Hit& hit) const
 {
     vec3 normal;
-    normal = ((ray.endpoint + ray.direction * hit.dist) - center).normalized();
+    normal = (ray.Point(hit.dist) - center).normalized();
     return normal;
 }
 
