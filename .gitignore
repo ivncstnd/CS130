@@ -5,3 +5,4 @@ grading-script.py
 ray_tracer
 test*
 *.png
+.vscode
