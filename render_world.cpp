@@ -26,7 +26,7 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
     for(auto o : objects)
     {
         Hit curr = o.object->Intersection(ray, 0);
-        if(curr.dist == -1)
+        if(curr.dist < 0)
             Pixel_Print("no intersection with ", o.object->name);
         else
             Pixel_Print("intersect test with ", o.object->name,"; hit: ", curr);
@@ -39,6 +39,8 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
     }
     if(p.second.Valid())
         Pixel_Print("closest intersection; obj: ", p.first.object->name,"; hit: ", p.second);
+    else
+        Pixel_Print("closest intersection; none");
     return p;
 }
 

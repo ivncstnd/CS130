@@ -20,8 +20,8 @@ vec3 Phong_Shader::
 Shade_Surface(const Render_World& render_world,const Ray& ray,const Hit& hit,
     const vec3& intersection_point,const vec3& normal,int recursion_depth) const
 {
-    vec3 color;
     Debug_Scope debug;
+    vec3 color;
     vec3 ambient;
     if(render_world.ambient_color)
         color = ambient = render_world.ambient_color->Get_Color(hit.uv) * render_world.ambient_intensity * this->color_ambient->Get_Color(hit.uv);
@@ -31,18 +31,30 @@ Shade_Surface(const Render_World& render_world,const Ray& ray,const Hit& hit,
     {   
         vec3 l = light->position - intersection_point;
         vec3 r = -l + 2.0 * dot(l, normal) * normal;
-        Ray shadow_ray(intersection_point, l);
-        std::pair<Shaded_Object, Hit> p = render_world.Closest_Intersection(shadow_ray);
-        if( !p.first.object || p.second.dist > l.magnitude())
+        diffuse = color_diffuse->Get_Color(hit.uv) * light->Emitted_Light(l) * std::max(dot(normal, l.normalized()), 0.0);
+        specular = color_specular->Get_Color(hit.uv) * light->Emitted_Light(l) * pow(std::max(dot(-ray.direction, r.normalized()), 0.0), specular_power);
+        if(!render_world.enable_shadows)
         {
-            diffuse = color_diffuse->Get_Color(hit.uv) * light->Emitted_Light(l) * std::max(dot(normal, l.normalized()), 0.0);
-            color += diffuse;
-            specular = color_specular->Get_Color(hit.uv) * light->Emitted_Light(l) * pow(std::max(dot(-ray.direction, r.normalized()), 0.0), specular_power);
-            color += specular;
+            Pixel_Print("shading for light ", light->name, ": diffuse: ", diffuse,"; specular: ", specular);
+            color += diffuse + specular;
+            continue;
         }
-        
-        Pixel_Print("shading for light ", light->name, ": diffuse: ", diffuse,"; specular: ", specular);
-        Pixel_Print("final color ", color);
+        Ray shadow_ray(intersection_point, l);
+        std::pair<Shaded_Object, Hit> shadow = render_world.Closest_Intersection(shadow_ray);
+        if(!shadow.first.object || shadow.second.dist > l.magnitude())
+        {
+            color += diffuse + specular;
+        }
+        if(!shadow.first.object)
+        {
+            Pixel_Print("light ", light->name," visible; closest object on ray too far away (light dist: ", l.magnitude(), "; object dist: inf)");
+            Pixel_Print("shading for light ", light->name, ": diffuse: ", diffuse,"; specular: ", specular);
+        }
+        else
+        {
+            Pixel_Print("light ", light->name," not visible; obscured by object ", shadow.first.object->name," at location ", shadow_ray.Point(shadow.second.dist));
+        }
     }
+    Pixel_Print("final color ", color);
     return color;
 }
