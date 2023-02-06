@@ -109,7 +109,6 @@ int main(int argc, char** argv)
     assert(fin);
     parse.Parse_Input(render_world,fin);
 
-    Pixel_Print("-x ", test_x);
     // Render the image
     render_world.Render();
 

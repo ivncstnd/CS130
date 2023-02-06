@@ -37,7 +37,8 @@ std::pair<Shaded_Object,Hit> Render_World::Closest_Intersection(const Ray& ray) 
             p.second = curr;
         }
     }
-    Pixel_Print("closest intersection; obj: ", p.first.object->name,"; hit: ", p.second);
+    if(p.second.Valid())
+        Pixel_Print("closest intersection; obj: ", p.first.object->name,"; hit: ", p.second);
     return p;
 }
 
@@ -47,7 +48,7 @@ void Render_World::Render_Pixel(const ivec2& pixel_index)
     Ray ray;
     ray.endpoint = camera.position;
     ray.direction = (camera.World_Position(pixel_index) - ray.endpoint).normalized();
-    vec3 color=Cast_Ray(ray,1);
+    vec3 color = Cast_Ray(ray, 1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
 }
 
@@ -62,23 +63,29 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
 {
+    vec3 color;
     Debug_Scope debug;
     Pixel_Print("cast ray ", ray);
     std::pair<Shaded_Object, Hit> p = Closest_Intersection(ray);
-    vec3 color;
     if(p.second.Valid())
     {
         Hit closest_hit = p.second; 
         vec3 intersection_point = ray.Point(closest_hit.dist);
         vec3 normal = p.first.object->Normal(ray, closest_hit);
         Pixel_Print("call Shade_Surface with location ", intersection_point,"; normal: ", normal);
-        color = p.first.shader->Shade_Surface(Render_World(), ray, closest_hit, intersection_point, normal, recursion_depth);
-        Debug_Scope debug;
-        Pixel_Print("ambient: ");
+        color = p.first.shader->Shade_Surface(*this, ray, closest_hit, intersection_point, normal, recursion_depth);
     }
     else
     {
-        color = vec3(0, 0, 0);
+        if(background_shader)
+        {
+            color = background_shader->Shade_Surface(*this, ray, p.second, vec3(0, 0, 0), vec3(0, 0, 0), recursion_depth);
+            Pixel_Print("call Shader_Surface with background_shader ", background_shader->name,"; color: ", color);
+        }
+        else
+        {
+            color = vec3(0, 0, 0);
+        }
     }
     return color;
 }
