@@ -47,12 +47,12 @@ Shade_Surface(const Render_World& render_world,const Ray& ray,const Hit& hit,
         }
         if(!shadow.first.object)
         {
-            Pixel_Print("light ", light->name," visible; closest object on ray too far away (light dist: ", l.magnitude(), "; object dist: inf)");
-            Pixel_Print("shading for light ", light->name, ": diffuse: ", diffuse,"; specular: ", specular);
+            Pixel_Print("light ", light->name," not visible; obscured by object ", shadow.first.object->name," at location ", shadow_ray.Point(shadow.second.dist));
         }
         else
         {
-            Pixel_Print("light ", light->name," not visible; obscured by object ", shadow.first.object->name," at location ", shadow_ray.Point(shadow.second.dist));
+            Pixel_Print("light ", light->name," visible; closest object on ray too far away (light dist: ", l.magnitude(), "; object dist: ", shadow.second.dist,")");
+            Pixel_Print("shading for light ", light->name, ": diffuse: ", diffuse,"; specular: ", specular);
         }
     }
     Pixel_Print("final color ", color);

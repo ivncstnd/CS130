@@ -21,6 +21,7 @@ vec3 Transparent_Shader::
 Shade_Surface(const Render_World& render_world,const Ray& ray,const Hit& hit,
     const vec3& intersection_point,const vec3& normal,int recursion_depth) const
 {
-    TODO;
+    //Debug_Scope debug;
+    //vec3 object_color = shader->Shade_Surface(render_world, ray, hit, intersection_point, normal, recursion_depth);
     return {};
 }

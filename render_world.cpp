@@ -72,6 +72,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth) const
     if(p.second.Valid())
     {
         Hit closest_hit = p.second; 
+        Pixel_Print("ray: ", ray,"; closest_hit.dist: ", closest_hit.dist);
         vec3 intersection_point = ray.Point(closest_hit.dist);
         vec3 normal = p.first.object->Normal(ray, closest_hit);
         Pixel_Print("call Shade_Surface with location ", intersection_point,"; normal: ", normal);
