@@ -15,6 +15,17 @@ vec3 Reflective_Shader::
 Shade_Surface(const Render_World& render_world,const Ray& ray,const Hit& hit,
     const vec3& intersection_point,const vec3& normal,int recursion_depth) const
 {
-    TODO; // determine the color
-    return {};
+    Debug_Scope debug;
+    vec3 color;
+    if (recursion_depth >= render_world.recursion_depth_limit)
+    {
+        return color = vec3(0, 0, 0);
+    }
+
+    vec3 reflection_direction = (ray.direction - 2 * dot(ray.direction, normal) * normal).normalized();
+    Ray reflection(intersection_point, reflection_direction);
+
+    color = render_world.Cast_Ray(reflection, recursion_depth + 1);
+
+    return color;
 }
