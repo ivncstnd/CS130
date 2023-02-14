@@ -21,8 +21,20 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
     }
     else
     {
-        double t = std::min((-b + sqrt(discriminant)) / 2, (-b - sqrt(discriminant)) / 2);
-        intersect.dist = t;
+        double t1 = (-b + sqrt(discriminant)) / 2;
+        double t2 = (-b - sqrt(discriminant)) / 2;
+        if(t1 >= small_t && t2 >= small_t)
+        {
+            intersect.dist = std::min(t1, t2);
+        }
+        else if(t1 < small_t && t2 < small_t)   
+        {
+            intersect.dist = -1;
+        }
+        else
+        {
+            intersect.dist = std::max(t1, t2);
+        }
     }
     return intersect;
 }
