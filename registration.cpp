@@ -13,7 +13,7 @@ void Setup_Parsing(Parse& parse)
 {
     parse.template Register_Object<Sphere>();
     parse.template Register_Object<Plane>();
-//     parse.template Register_Object<Mesh>();
+    parse.template Register_Object<Mesh>();
 
     parse.template Register_Light<Point_Light>();
 
