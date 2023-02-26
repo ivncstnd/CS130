@@ -1,5 +1,5 @@
 #include "flat_shader.h"
-// #include "mesh.h"
+#include "mesh.h"
 #include "parse.h"
 #include "phong_shader.h"
 #include "plane.h"
