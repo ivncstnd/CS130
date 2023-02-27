@@ -62,16 +62,31 @@ void Mesh::Read_Obj(const char* file)
 // Check for an intersection against the ray.  See the base class for details.
 Hit Mesh::Intersection(const Ray& ray, int part) const
 {
-    TODO;
-    return {};
+    Debug_Scope debug;
+    Hit h;
+    double min_t = std::numeric_limits<double>::max();
+    for(int i = 0; i < triangles.size(); ++i)
+    {
+        Hit curr = Intersect_Triangle(ray, i);
+        if (curr.dist <= min_t && curr.dist >= small_t)
+        {
+            min_t = curr.dist;
+            h = curr;
+        }
+
+    }
+    return h;
 }
 
 // Compute the normal direction for the triangle with index part.
 vec3 Mesh::Normal(const Ray& ray, const Hit& hit) const
 {
     assert(hit.triangle>=0);
-    TODO;
-    return vec3();
+    vec3 A = vertices[triangles[hit.triangle][0]];
+    vec3 B = vertices[triangles[hit.triangle][1]];
+    vec3 C = vertices[triangles[hit.triangle][2]];
+    vec3 n = cross(A - B, A - C).normalized();
+    return n;
 }
 
 // This is a helper routine whose purpose is to simplify the implementation
@@ -88,8 +103,42 @@ vec3 Mesh::Normal(const Ray& ray, const Hit& hit) const
 // two triangles.
 Hit Mesh::Intersect_Triangle(const Ray& ray, int tri) const
 {
-    TODO;
-    return {};
+    vec3 A = vertices[triangles[tri][0]];
+    vec3 B = vertices[triangles[tri][1]];
+    vec3 C = vertices[triangles[tri][2]];
+
+    vec3 u = ray.direction;
+    vec3 v = B - A;
+    vec3 w = C - A;
+
+    vec3 n = cross(v, w);
+
+    if(dot(u, n) == 0)
+    {
+        return {};
+    }
+    float t = dot((A - ray.endpoint), n) / dot(u, n);
+    if (t < small_t)
+    {
+        return {};
+    }
+    vec3 p = ray.Point(t);
+    vec3 y = p - A;
+    double d = dot(cross(u, v), w);
+
+    double gamma = dot(cross(u, v), y) / d;
+    double beta = dot(cross(w, u), y) / d;
+    double alpha = 1 - beta - gamma;
+
+    if(alpha < -weight_tolerance || beta < -weight_tolerance || gamma < -weight_tolerance)
+    {
+        return {};
+    }
+
+    Hit h;
+    h.dist = t;
+    h.triangle = tri;
+    return h;
 }
 
 std::pair<Box,bool> Mesh::Bounding_Box(int part) const

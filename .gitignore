@@ -7,3 +7,4 @@ test*
 *.png
 .vscode
 grading
+*.obj
