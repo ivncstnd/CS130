@@ -62,10 +62,9 @@ void Mesh::Read_Obj(const char* file)
 // Check for an intersection against the ray.  See the base class for details.
 Hit Mesh::Intersection(const Ray& ray, int part) const
 {
-    Debug_Scope debug;
     Hit h;
     double min_t = std::numeric_limits<double>::max();
-    for(int i = 0; i < triangles.size(); ++i)
+    for(unsigned long i = 0; i < triangles.size(); i++)
     {
         Hit curr = Intersect_Triangle(ray, i);
         if (curr.dist <= min_t && curr.dist >= small_t)
@@ -106,29 +105,24 @@ Hit Mesh::Intersect_Triangle(const Ray& ray, int tri) const
     vec3 A = vertices[triangles[tri][0]];
     vec3 B = vertices[triangles[tri][1]];
     vec3 C = vertices[triangles[tri][2]];
-
-    vec3 u = ray.direction;
-    vec3 v = B - A;
-    vec3 w = C - A;
-
-    vec3 n = cross(v, w);
-
-    if(dot(u, n) == 0)
+    
+    vec3 n = cross((B-A), (C-A)).normalized();
+    if(dot(ray.direction, n) == 0)
     {
         return {};
     }
-    float t = dot((A - ray.endpoint), n) / dot(u, n);
+    float t = dot((A - ray.endpoint), n) / dot(ray.direction, n);
     if (t < small_t)
     {
         return {};
     }
-    vec3 p = ray.Point(t);
-    vec3 y = p - A;
-    double d = dot(cross(u, v), w);
 
-    double gamma = dot(cross(u, v), y) / d;
-    double beta = dot(cross(w, u), y) / d;
-    double alpha = 1 - beta - gamma;
+    vec3 P = ray.Point(t);
+    double ABC = 0.5 * cross((B-A), (C-A)).magnitude();
+
+    double alpha = 0.5 * dot(cross((B - P), (C - P)), n) / ABC;
+    double beta = 0.5 * dot(cross((P - A), (C - A)), n) / ABC;
+    double gamma = 1 - alpha - beta;
 
     if(alpha < -weight_tolerance || beta < -weight_tolerance || gamma < -weight_tolerance)
     {
