@@ -102,6 +102,7 @@ vec3 Mesh::Normal(const Ray& ray, const Hit& hit) const
 // two triangles.
 Hit Mesh::Intersect_Triangle(const Ray& ray, int tri) const
 {
+    Debug_Scope debug;
     vec3 A = vertices[triangles[tri][0]];
     vec3 B = vertices[triangles[tri][1]];
     vec3 C = vertices[triangles[tri][2]];
@@ -130,8 +131,16 @@ Hit Mesh::Intersect_Triangle(const Ray& ray, int tri) const
     }
 
     Hit h;
+
+    const ivec3& tex_indices = triangle_texture_index[tri];
+    const vec2& uv_a = uvs[tex_indices[0]];
+    const vec2& uv_b = uvs[tex_indices[1]];
+    const vec2& uv_c = uvs[tex_indices[2]];
+
+    h.uv = alpha * uv_a + beta * uv_b + gamma * uv_c;
     h.dist = t;
     h.triangle = tri;
+    
     return h;
 }
 

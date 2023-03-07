@@ -43,6 +43,13 @@ Texture::~Texture()
 
 vec3 Texture::Get_Color(const vec2& uv) const
 {
-    TODO;
-    return {0,0,0};
+    double u = uv[0];
+    double v = uv[1];
+
+    int i = u * width;
+    int j = v * height;
+
+    vec3 color = From_Pixel(data[j*width+i]);
+    Pixel_Print("texture (u,v): ", uv, " (i,j): ", i, " ", j, " color: ", color);
+    return color;
 }
