@@ -10,7 +10,6 @@ need to modify this file to get things to compile on your computer. (For
 example, if libraries are located in different places.) You may also need to
 install other libraries (such as the dev files for libpng).
 
-
 # PIXEL TRACES
 
 Some test cases also come with a pixel trace.  These are debugging aids.  They
@@ -35,3 +34,17 @@ intersection routines are correct.  (3) If you are having difficulties passing a
 test case that has a pixel trace, matching the pixel trace (though tedious) will
 often be the easiest path to a fix.  In fact, it might be easier to find a later
 test case that does have a pixel trace.  
+
+# IMAGES
+
+Phong Shader with Shadows
+
+![18](https://github.com/ivncstnd/CS130/assets/70795730/77821794-0a08-4f9a-b0a0-734b9c6549a6)
+
+Transparent Shader
+
+![07](https://github.com/ivncstnd/CS130/assets/70795730/8b594f30-a39a-4496-8a1a-2ffcb16ef82d)
+
+Large Mesh Texture Mapping
+
+![03](https://github.com/ivncstnd/CS130/assets/70795730/9c0d4002-63bc-44e4-aaa3-6dd68dd9978b)
